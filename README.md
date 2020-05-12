@@ -1,2 +1,2 @@
 # PullERA5
-scripts for downloading era5 reanalysis output
+Convenience scripts for downloading ERA5-Reanalysis data from different sources.   
