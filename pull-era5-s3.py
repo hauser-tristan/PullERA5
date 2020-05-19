@@ -6,7 +6,12 @@
     instance then the download speeds between S3 nodes is much better than 
     would typically see when accessing the ECMWF servers directly. 
 
-    Avalible meteorological parameters : 
+    Requires libraries for interacting with AWS (botocore, boto3).
+
+    TODO: Currently assumes that user wants to download full years of data,
+          should edit to work on a monthly basis to save time/space if needed.
+
+    Avalible meteorological parameters (as of 05-2020) : 
     air_pressure_at_mean_sea_level
     air_temperature_at_2_metres
     air_temperature_at_2_metres_1hour_Maximum
@@ -75,7 +80,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 args = vars(args)
-print(args)
+#print(args)
 
 metprm = args['metprm']
 
