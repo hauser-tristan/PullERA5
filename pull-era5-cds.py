@@ -10,7 +10,7 @@
     TODO: Currently assumes that user wants to download single layer data.
 
     Example call : 
-    python pull-era5-s3.py \
+    python pull-era5-cds.py \
         --region_lab NorthAtlantic \
         --metprm sea_surface_temperature \
         --storage_path <<LOCAL DIRECTORY PATH>> \ 
@@ -21,8 +21,11 @@
 
 import numpy as np
 import argparse
+import urllib3
 import cdsapi
 import os
+
+urllib3.disable_warnings()
 
 # ::<>::x::<>::x::<>::x::<>::x::<>::x::<>::x::<>::x::<>::x::<>::x::<>::x::<>:: #
 parser = argparse.ArgumentParser()
