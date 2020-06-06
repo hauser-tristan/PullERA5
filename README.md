@@ -11,8 +11,11 @@ These instructions are for `conda` but any library installer _should_ work.
 ### Install libraries needed for Open S3 downloads
 
 `conda install -c conda-forge xarray`
+
 `conda install -c conda-forge botocore`
+
 `conda install -c conda-forge boto3`
+
 `conda install -c conda-forge netcdf4`
 
 ### Install (additional) libraries needed for CDS downloads
