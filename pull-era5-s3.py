@@ -81,7 +81,6 @@ parser.add_argument(
 )
 args = parser.parse_args()
 args = vars(args)
-#print(args)
 
 metprm = args['metprm']
 
@@ -94,6 +93,7 @@ metprm = args['metprm']
     Can't download a particular subregion, rather have to download the 
     full file, then chop a region out of it. 
     """
+
 region_boxes = {'NorthSea' : [10,12,49,62],
                 'BVI'      : [-70,-60,13,25],
                 'NorthAtlantic' : [-60,25,40,70]
