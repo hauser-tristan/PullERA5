@@ -166,6 +166,7 @@ for y,m in itertools.product(years,months) :
 
     lat = ds.lat.values
     lon = ds.lon.values
+    ds = ds.assign_coords(lon=(((ds.lon + 180) % 360) - 180))    
     ds = ds.loc[dict(
         lon=lon[
             (lon>=(360+region_box['min_lon']))
@@ -175,7 +176,6 @@ for y,m in itertools.product(years,months) :
             & (lat<=region_box['max_lat'])
         ]
     )]
-    ds = ds.assign_coords(lon=(((ds.lon + 180) % 360) - 180))
     ## In older xarray versions would manually overwrite coordinate
     #| lon = ds.lon.values
     #| lon[lon>180.0] = lon[lon>180.0]-360.0
