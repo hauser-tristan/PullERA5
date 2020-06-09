@@ -150,7 +150,9 @@ for y,m in itertools.product(years,months) :
         client.download_file(era5_bucket, s3_data_key, data_file)
 
     ds = xr.open_dataset(data_file)
-    #ds = ds.load()
+    ## In older version would have to load data
+    ## so as to work with lon labeling
+    #| ds = ds.load()
 
     """ The simulation grid is reported with longitude units in the 0:360
         range, which makes it hard to define a continuous box from
@@ -166,7 +168,7 @@ for y,m in itertools.product(years,months) :
 
     lat = ds.lat.values
     lon = ds.lon.values
-    ds = ds.assign_coords(lon=(((ds.lon + 180) % 360) - 180))
+    ds = ds.assign_coords(lon=(((ds.lon + 180) % 360) - 180))    
     ds = ds.loc[dict(
         lon=lon[
             (lon>=(region_box['min_lon']))
@@ -176,21 +178,21 @@ for y,m in itertools.product(years,months) :
             & (lat<=region_box['max_lat'])
         ]
     )]
-    
-    # ds = ds.loc[dict(
-    #     lon=lon[
-    #         (lon>=(360+region_box['min_lon']))
-    #         & (lon<=(360+region_box['max_lon']))
-    #     ],
-    #     lat=lat[(lat>=region_box['min_lat'])
-    #         & (lat<=region_box['max_lat'])
-    #     ]
-    # )]
-    
-    ## In older xarray versions would manually overwrite coordinate
+    ## In older xarray versions would have to adjust for lon
+    ## pattern and then manually overwrite coordinate
+    #| ds = ds.loc[dict(
+    #|     lon=lon[
+    #|         (lon>=(360+region_box['min_lon']))
+    #|         & (lon<=(360+region_box['max_lon']))
+    #|     ],
+    #|     lat=lat[(lat>=region_box['min_lat'])
+    #|         & (lat<=region_box['max_lat'])
+    #|     ]
+    #| )]
     #| lon = ds.lon.values
     #| lon[lon>180.0] = lon[lon>180.0]-360.0
     #| ds.lon.values = lon
+    
     os.remove(data_file)
     ds.to_netcdf(
         'tmp_'+metprm+'_'+str(y)+'-'+str(m).zfill(2)+'.nc')
