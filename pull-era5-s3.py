@@ -150,7 +150,7 @@ for y,m in itertools.product(years,months) :
         client.download_file(era5_bucket, s3_data_key, data_file)
 
     ds = xr.open_dataset(data_file)
-    ds = ds.load()
+    #ds = ds.load()
 
     """ The simulation grid is reported with longitude units in the 0:360
         range, which makes it hard to define a continuous box from
