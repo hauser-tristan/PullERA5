@@ -38,6 +38,14 @@
         --min_year 2000 \ 
         --max_year 2000
 
+    python pull-era5-s3.py \
+        --region_lab NorthAtlantic \
+        --metprm air_temperature_at_2_metres \
+        --storage_path /data/ERA5 \ 
+        --min_year 2000 \ 
+        --max_year 2000
+
+
     """
 
 import xarray as xr
@@ -94,9 +102,10 @@ metprm = args['metprm']
     full file, then chop a region out of it. 
     """
 
-region_boxes = {'NorthSea' : [10,12,49,62],
-                'BVI'      : [-70,-60,13,25],
-                'NorthAtlantic' : [-60,25,40,70]
+region_boxes = {'NorthSea'      : [ 10, 12,49,62],
+                'BVI'           : [-70,-60,13,25],
+                'NorthAtlantic' : [-60, 25,40,70],
+                'Ukraine'       : [ 20, 42,43,53]
 }
 region_lab = args['region_lab']
 region_box = {
