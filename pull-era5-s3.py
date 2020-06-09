@@ -38,14 +38,6 @@
         --min_year 2000 \ 
         --max_year 2000
 
-    python pull-era5-s3.py \
-        --region_lab NorthAtlantic \
-        --metprm air_temperature_at_2_metres \
-        --storage_path /data/ERA5 \ 
-        --min_year 2000 \ 
-        --max_year 2000
-
-
     """
 
 import xarray as xr
@@ -146,9 +138,11 @@ for y,m in itertools.product(years,months) :
     year = date.strftime('%Y')
     month = date.strftime('%m')
     s3_data_key = s3_data_ptrn.format(
-        year=year, month=month, metprm=metprm)
+        year=year, month=month, metprm=metprm
+    )
     data_file = data_file_ptrn.format(
-        year=year, month=month, metprm=metprm)
+        year=year, month=month, metprm=metprm
+    )
 
     # ... check if file already exists ...
     if not os.path.isfile(data_file): 
@@ -156,7 +150,7 @@ for y,m in itertools.product(years,months) :
         client.download_file(era5_bucket, s3_data_key, data_file)
 
     ds = xr.open_dataset(data_file)
-    #ds = ds.load()
+    ds = ds.load()
 
     """ The simulation grid is reported with longitude units in the 0:360
         range, which makes it hard to define a continuous box from
