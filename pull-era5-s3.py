@@ -14,8 +14,7 @@
     Avalible meteorological parameters (as of 05-2020) : 
     air_pressure_at_mean_sea_level
     air_temperature_at_2_metres
-    air_temperature_at_2_metres_1hour_Maximum
-    air_temperature_at_2_metres_1hour_Minimum
+    air_temperature_at_2_metres_1hour   air_temperature_at_2_metres_1hour_Minimum
     dew_point_temperature_at_2_metres
     eastward_wind_at_100_metres
     eastward_wind_at_10_metres

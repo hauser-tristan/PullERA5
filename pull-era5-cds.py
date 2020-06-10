@@ -77,16 +77,18 @@ client = cdsapi.Client()
     for convience, but have to choose which one to use for a particular
     run of the script.
     """
-region_boxes = {'NorthSea' : [10,12,49,62],
-                'BVI'      : [-70,-60,13,25],
-                'NorthAtlantic' : [-60,25,40,70]
+region_boxes = {
+    'NorthSea'      : [10,12,49,62],
+    'BVI'           : [-70,-60,13,25],
+    'NorthAtlantic' : [-60,25,40,70],
+    'Ukraine'       : [ 20, 42,43,53]
 }
 region_lab = args['region_lab']
 region_box = {
-	'min_lat':region_boxes[args['region_lab']][2],
-	'max_lat':region_boxes[args['region_lab']][3],
-	'min_lon':region_boxes[args['region_lab']][0],
-	'max_lon':region_boxes[args['region_lab']][1]
+    'min_lat':region_boxes[args['region_lab']][2],
+    'max_lat':region_boxes[args['region_lab']][3],
+    'min_lon':region_boxes[args['region_lab']][0],
+    'max_lon':region_boxes[args['region_lab']][1]
 }
 
 """ Select the years and months to download 
