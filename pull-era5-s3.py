@@ -14,7 +14,8 @@
     Avalible meteorological parameters (as of 05-2020) : 
     air_pressure_at_mean_sea_level
     air_temperature_at_2_metres
-    air_temperature_at_2_metres_1hour   air_temperature_at_2_metres_1hour_Minimum
+    air_temperature_at_2_metres_1hour_Maximum
+    air_temperature_at_2_metres_1hour_Minimum
     dew_point_temperature_at_2_metres
     eastward_wind_at_100_metres
     eastward_wind_at_10_metres
@@ -93,17 +94,16 @@ metprm = args['metprm']
     full file, then chop a region out of it. 
     """
 
-region_boxes = {'NorthSea'      : [ 10, 12,49,62],
-                'BVI'           : [-70,-60,13,25],
-                'NorthAtlantic' : [-60, 25,40,70],
-                'Ukraine'       : [ 20, 42,43,53]
+region_boxes = {'NorthSea' : [10,12,49,62],
+                'BVI'      : [-70,-60,13,25],
+                'NorthAtlantic' : [-60,25,40,70]
 }
 region_lab = args['region_lab']
 region_box = {
-	'min_lat':region_boxes[args['region_lab']][2],
-	'max_lat':region_boxes[args['region_lab']][3],
-	'min_lon':region_boxes[args['region_lab']][0],
-	'max_lon':region_boxes[args['region_lab']][1]
+	'min_lat':region_boxes[region_lab][2],
+	'max_lat':region_boxes[region_lab][3],
+	'min_lon':region_boxes[region_lab][0],
+	'max_lon':region_boxes[region_lab][1]
 }
 
 
@@ -132,16 +132,16 @@ months = range(1,13)
 for y,m in itertools.product(years,months) :
     date = datetime.date(y,m,1)
     # ... file path patterns ...
-    s3_data_ptrn = 'cds/{year}/{month}/data/{metprm}.nc'
+    ## Former directory path label: 
+    #| s3_data_ptrn = 'cds/{year}/{month}/data/{metprm}.nc'
+    s3_data_ptrn = '{year}/{month}/data/{metprm}.nc'
     data_file_ptrn = '{year}{month}_{metprm}.nc'
     year = date.strftime('%Y')
     month = date.strftime('%m')
     s3_data_key = s3_data_ptrn.format(
-        year=year, month=month, metprm=metprm
-    )
+        year=year, month=month, metprm=metprm)
     data_file = data_file_ptrn.format(
-        year=year, month=month, metprm=metprm
-    )
+        year=year, month=month, metprm=metprm)
 
     # ... check if file already exists ...
     if not os.path.isfile(data_file): 
@@ -149,9 +149,7 @@ for y,m in itertools.product(years,months) :
         client.download_file(era5_bucket, s3_data_key, data_file)
 
     ds = xr.open_dataset(data_file)
-    ## In older version would have to load data
-    ## so as to work with lon labeling
-    #| ds = ds.load()
+    #ds = ds.load()
 
     """ The simulation grid is reported with longitude units in the 0:360
         range, which makes it hard to define a continuous box from
@@ -164,11 +162,15 @@ for y,m in itertools.product(years,months) :
         then reload the smaller file in and sort along the indexes
         from there.
         """
-
+    ## In older xarray versions would manually overwrite coordinate
+    #| lon = ds.lon.values
+    #| lon[lon>180.0] = lon[lon>180.0]-360.0
+    #| ds.lon.values = lon
+    ds = ds.assign_coords(lon=(((ds.lon + 180) % 360) - 180))
     lat = ds.lat.values
     lon = ds.lon.values
-    ds = ds.assign_coords(lon=(((ds.lon + 180) % 360) - 180))    
-    ds = ds.loc[dict(
+    
+    ds  = ds.loc[dict(
         lon=lon[
             (lon>=(region_box['min_lon']))
             & (lon<=(region_box['max_lon']))
@@ -177,21 +179,6 @@ for y,m in itertools.product(years,months) :
             & (lat<=region_box['max_lat'])
         ]
     )]
-    ## In older xarray versions would have to adjust for lon
-    ## pattern and then manually overwrite coordinate
-    #| ds = ds.loc[dict(
-    #|     lon=lon[
-    #|         (lon>=(360+region_box['min_lon']))
-    #|         & (lon<=(360+region_box['max_lon']))
-    #|     ],
-    #|     lat=lat[(lat>=region_box['min_lat'])
-    #|         & (lat<=region_box['max_lat'])
-    #|     ]
-    #| )]
-    #| lon = ds.lon.values
-    #| lon[lon>180.0] = lon[lon>180.0]-360.0
-    #| ds.lon.values = lon
-    
     os.remove(data_file)
     ds.to_netcdf(
         'tmp_'+metprm+'_'+str(y)+'-'+str(m).zfill(2)+'.nc')
