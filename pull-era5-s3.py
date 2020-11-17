@@ -94,9 +94,10 @@ metprm = args['metprm']
     full file, then chop a region out of it. 
     """
 
-region_boxes = {'NorthSea' : [10,12,49,62],
-                'BVI'      : [-70,-60,13,25],
-                'NorthAtlantic' : [-60,25,40,70]
+region_boxes = {'NorthSea'      : [10,12,49,62],
+                'BVI'           : [-70,-60,13,25],
+                'NorthAtlantic' : [-60,25,40,70],
+                'WestEurope'    : [-14,26,25,65]
 }
 region_lab = args['region_lab']
 region_box = {
